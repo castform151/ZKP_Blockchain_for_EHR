@@ -1,17 +1,39 @@
 import time
 import hashlib
 from .txn import Transaction
+from merkletools import MerkleTools
 
 class Block:
-    def __init__(self, previousHash, transactions, timestamp, nonce):
+    def __init__(self, index, previousHash, transactions, timestamp, nonce):
+        self.index = index
         self.previousHash = previousHash
         self.transactions = transactions
-        self.timestamp = timestamp
+        self.timestamp = timestamp #or int(time.time())
         self.nonce = nonce
+        self.merkel_root = None
         self.hash = self.calculateHash()
 
+    def build_merkel_tree(self):
+        """
+        Merkel Tree used to hash all the transactions, and on mining do not recompute Txs hash everytime
+        Which making things much faster. 
+        And tree used because we can append new Txs and rebuild root hash much faster, when just building 
+        block before mine it.
+        """
+        if self.merkel_root:
+            return self.merkel_root
+        mt = MerkleTools(hash_type="SHA256")
+        for el in self.transactions:
+            mt.add_leaf(el.hash)
+        mt.make_tree()
+        self.merkel_root = mt.get_merkle_root()
+        return self.merkel_root
+
     def calculateHash(self):
-        hashData = self.previousHash + str(self.timestamp) + str(self.transactions) + str(self.nonce)
+        # hashData = self.previousHash + str(self.timestamp) + str(self.transactions) + str(self.nonce)
+        hashData = '{}{}{}{}{}'.format(
+            self.build_merkel_tree(), self.previousHash, self.index, self.nonce, self.timestamp
+        )
         return hashlib.sha256(hashData.encode()).hexdigest()
 
 class Blockchain:
@@ -20,7 +42,7 @@ class Blockchain:
         self.pendingTransactions = []
 
     def createGenesisBlock(self):
-        return Block("0", [], time.time(), 0)
+        return Block(0, "0", [], time.time(), 0)
 
     def getLastBlock(self):
         return self.chain[-1]
@@ -32,9 +54,9 @@ class Blockchain:
 
     def createBlock(self, transactions):
         previousBlockHash = self.getLastBlock().hash
-        timestamp = time.time()
         nonce = self.findNonce(previousBlockHash, transactions)
-        block = Block(previousBlockHash, transactions, timestamp, nonce)
+        timestamp = time.time()
+        block = Block(self.getLastBlock().index+1, previousBlockHash, transactions, timestamp, nonce)
         self.addBlock(block)
 
     def findNonce(self, previousHash, transactions):
@@ -54,6 +76,8 @@ class Blockchain:
         self.createBlock(transactions)
         self.pendingTransactions = []
 
+
+    #Move this to USer class
     def viewUser(self, userAddress):
         transactionList = []
         for block in self.chain:
