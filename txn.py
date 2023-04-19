@@ -1,5 +1,5 @@
 import hashlib
-import ecdsa
+# import ecdsa
 from user import User
 
 
@@ -29,6 +29,7 @@ class Transaction:
     def verifyZkProof(self, senderBalance):
         # Implement the zero-knowledge proof verification logic here
         # Return True if the proof is valid, and False otherwise
+
         pass
 
 

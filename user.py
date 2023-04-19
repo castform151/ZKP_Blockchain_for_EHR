@@ -3,20 +3,19 @@ import json
 import time
 
 
-class EHRUser:
-    def __init__(self, name, dob, gender, contact_details, ssn):
+class User:
+    def __init__(self, name, dob, gender, contact_details):
         self.name = name
         self.dob = dob
         self.gender = gender
         self.contact_details = contact_details
-        self.ssn = ssn
         self.ehrs = []
 
     def view_records(self, patient_id):
         """Get all electronic health records (EHRs) of the user."""
         return self.ehrs
 
-    def add_record(self, medical_history, allergies, immunizations, lab_results, prescriptions, patient_data):
+    def add_record(self, medical_history, allergies, immunizations, covid_vaccine, lab_results, prescriptions, patient_data):
         """Create a new electronic health record (EHR) for the user."""
         timestamp = time.time()
         ehr = {
@@ -24,6 +23,7 @@ class EHRUser:
             'medical_history': medical_history,
             'allergies': allergies,
             'immunizations': immunizations,
+            'covid-vaccine': covid_vaccine,
             'lab_results': lab_results,
             'prescriptions': prescriptions,
             'patient_data': patient_data
@@ -45,3 +45,8 @@ class EHRUser:
         pass
 
     # Additional methods and functionalities specific to the user type can be added here
+
+
+user1 = User("XYZ", "25022001", "M", "8726374821")
+
+# name ,date,
