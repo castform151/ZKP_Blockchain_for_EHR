@@ -20,22 +20,32 @@ class ZKPUtil:
         # return random.randint(2**8, 2**10)
         return 23
 
-class ZKP:
+class ZKP_Signature:
     def __init__(self, secretInfo) -> None:
         self._secretInfo = secretInfo
-        self.p = ZKPUtil.getLargePrime()
-        self.g = prime.find_primitive_root(self.p)
-        self.x = random.randint(0, self.p-1)
-        self.y = pow(self.g, self.x, self.p)
-        self.r = random.randint(0, self.p-1)
-        self.m = int(hashlib.md5(secretInfo.encode()).hexdigest(), 16)
-        self.t1 = pow(self.m, self.x, self.p)
-        self.t2 = pow(self.m, self.r, self.p)
-        self.t3 = pow(self.g, self.r, self.p)
-        c = int(hashlib.sha256(str(self.t1).encode()).hexdigest(), 16)
-        
+        p = ZKPUtil.getLargePrime()
+        g = prime.find_primitive_root(p)
+        x = random.randint(0, p-2)
+        y = pow(g, x, p)
+        r = random.randint(0, p-2)
+        m = int(hashlib.md5(secretInfo.encode()).hexdigest(), 16)
+        self.t1 = pow(m, x, p)
+        self.t2 = pow(m, r, p)
+        self.t3 = pow(g, r, p)
+        preHash = "{}{}{}".format(self.t1, self.t2, self.t3)
+        c = int(hashlib.sha256(preHash.encode()).hexdigest(), 16)
+        self.s = c*x + r
+    
+    def generatepqg(self):
+        k = random.randrange(2**8, 2**10)
         
         print(self.m)
 
+class ZK_Verifier:
+    def __init__(self) -> None:
+        pass
     
-z = ZKP("102830")
+    def verify(self):
+        
+       
+# z = ZKP("102830")
