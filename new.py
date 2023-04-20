@@ -20,6 +20,9 @@ class Transaction:
         recipient = input("Enter recipient: ")
         amount = input("Enter amount: ")
         return cls(sender, recipient, amount)
+    
+    def verifyTransaction():
+        pass
 
 
 class Block:
