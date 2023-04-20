@@ -1,0 +1,90 @@
+1   Physical Scientists
+3   Architects, Engineers, Technologists And Surveyors
+2   Physical Science
+4   Engineering Technicians
+5   Aircraft And Ships Officers
+6   Life Scientists
+7   Life Science Technicians
+8   Physicians And Surgeons
+9   Nursing And Other Medical And Health Technicians
+10  Scientific, Medical And Technical Persons, Other
+11  Mathematicians, Statisticians And Related Workers
+12  Economists, And Related Workers
+13  Accountants, Auditors And Related Workers
+14  Social Scientists And Related Workers
+15  Jurists
+16  Teachers
+17  Poets, Authors, Journalists And Related Workers
+18  Sculptors, Painters, Photographers, And Related Creative Artists
+19  Composers And Performing Artists
+20  Professional Workers, N.E.C.
+21  Elected And Legislative Officials
+22  Administrative And Executive Officials Government And Local Bodies
+23  Working Proprietors, Directors And Managers, Wholesale And Retail Trade
+24  Directors And Managers, Financial Institutions
+25  Working Proprietors, Directors And Managers Mining
+26  Working Proprietors, Directors Managers And Related
+27  Working Proprietors, Directors And Managers, Other Services
+29  Administrative, Executive And Managerial Workers, N.E.C.
+30  Clerical And Other Supervisors
+31  Village Officials
+32  Stenographers, Typist And Card And Tape Punching Operators
+33  Book Keepers, Cashiers And Related Workers
+34  Computing Machine Operators
+35  Clerical And Related Workers
+36  Transport And Communication Supervisors
+37  Transport Conductors And Guards
+38  Mail Distributors And Related Workers
+39  Telephone And Telegraph Operators
+40  Merchants And Shopkeepers, Wholesale And Retail Trade
+41  Manufacturers, Agents
+42  Technical Salesmen And Commercial Travellers
+43  Salesmen, Shop Assistants And Related Workers
+44  Insurance, Real Estate, Securities And Business Service,
+45  Money Lenders And Pawn Brokers
+49  Sales Workers, N.E.C.
+50  Hotel And Restaurant Keepers
+51  House Keepers, Matron And Stewards (Domestic & Institutional)
+52  Cooks, Waiters, Bartenders And Related Workers (Domestic & Institutional)
+53  Maids And Related House Keeping Service Workers, N.E.C.
+54  Building Caretakers, Sweepers, Cleaners And Related Workers
+55  Launderers, Dry-Cleaners And Pressers, N.E.C.
+56  Hair Dresser, Barbers, Beauticians And Related Workers
+57  Protective Service Workers
+59  Service Workers
+60  Farm Plantation, Dairy And Other Managers And Supervisors
+61  Cultivators
+62  Farmers, Other Than Cultivators
+63  Agricultural Labourer
+64  Plantation Labourers & Related Workers
+65  Other Farm Workers
+66  Forestry Workers
+67  Hunters And Related Workers
+68  Fishermen And Related Workers
+71  Miners, Quarrymen, Well Drillers & Related Workers
+72  Metal Processors
+73  Wood Preparation Workers And Paper Makers
+74  Chemical Processors And Related Workers
+75  Spinners, Weavers, Knitters, Dyers And Related Workers
+76  Tanners, Fellmongers And Pelt Dressers
+77  Food And Beverage Processors
+78  Tobacco Preparers & Tobacco Product Makers
+79  Tailors, Dress Makers, Sewers, Upholsterers & Related Workers
+80  Shoemakers & Leather Goods Makers
+81  Carpenters, Cabinet & Related Wood Workers
+82  Stone Cutters & Carvers
+83  Blacksmiths, Tool Makers And Machine Tools Operators
+84  Machinery Fitters, Machine Assemblers And Precession Instrument Makers (Exc
+85  Electrical Fitters & Related Electrical & Electronic Workers
+86  Broadcasting Station And Sound Equipment Operators And Cinema Projectionist
+87  Plumbers, Welders, Sheet Metal & Structural Metal Preparers And Erectors
+88  Jewellery & Precious Metal Workers And Metal Engravers
+89  Glass Formers, Potters & Related Workers
+90  Rubber And Plastic Product Makers Workers
+91  Paper & Paper Board Products Makers
+92  Painters
+93  Stationery Engines And Related Equipment Operators, Oilers
+94  Transport Equipment Operators (Driver)
+95  Labourers (Labourers, N.E.C.)
+96  Other (New Workers Seeking Employment)
+97  Student / Workers Not Reporting Any Occupation)
