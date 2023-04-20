@@ -42,6 +42,7 @@ class Blockchain:
     def __init__(self):
         self.chain = [self.createGenesisBlock()]
         self.pendingTransactions = []
+        self.newTransactions = []
 
     def createGenesisBlock(self):
         return Block(0, "0", [], time.time(), 0)
