@@ -23,6 +23,9 @@ class Transaction:
 
 
 class Block:
+    def __str__(self): return "Block: {} {}".format(
+        self.index, self.previousHash)
+
     def __init__(self, index, timestamp, transactions, nonce, previousHash):
         self.index = index
         self.timestamp = timestamp
@@ -48,7 +51,7 @@ class Blockchain:
         self.chain = [self.createGenesisBlock()]
 
     def createGenesisBlock(self):
-        return Block(0, time.time(), self.current_Transactions, 100, 1)
+        return Block(0, time.time(), [], 100, 1)
 
     @property
     def getLastBlock(self):
@@ -62,8 +65,8 @@ class Blockchain:
     #     self.current_Transactions.append(transaction)
     #     return len(self.current_Transactions)
 
-    def addTransaction(self):
-        transaction = Transaction.takeInput()
+    def addTransaction(self, transaction):
+        # transaction = Transaction.takeInput()
         self.current_Transactions.append(transaction)
         return len(self.current_Transactions)
 
@@ -96,7 +99,7 @@ class Blockchain:
 
         proof = self.proofOfWork(new_block)
         self.addBlock(new_block, proof)
-        self.unconfirmed_transactions = []
+        self.current_Transactions = []
         return new_block.index
 
     def proofOfWork(self, block):
@@ -128,8 +131,18 @@ class Blockchain:
 
 # app.run(debug=True, port=5000)
 b = Blockchain()
-while(int(input("Enter 1 if you want to add a transaction\n")) == 1):
-    b.addTransaction()
-    b.mineBlock()
+# while(int(input("Enter 1 if you want to add a transaction\n")) == 1):
+#     b.addTransaction()
+#     b.mineBlock()
+b.addTransaction(Transaction("sender1", "recipient1", 1))
+b.mineBlock()
+b.addTransaction(Transaction("sender2", "recipient2", 10))
+b.mineBlock()
+# b.viewTransactions()
 
-b.viewTransactions()
+print("These are transactions ")
+print(len(b.chain))
+for i in b.chain:
+    # print(i)
+    for t in i.transactions:
+        print(i, t)
