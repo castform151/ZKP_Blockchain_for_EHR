@@ -1,4 +1,5 @@
 import time
+import pickle
 import hashlib
 from txn import Transaction
 # from merkletools import MerkleTools

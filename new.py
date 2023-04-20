@@ -1,4 +1,6 @@
 import time
+import os
+import pickle
 import hashlib
 from flask import Flask, request
 import requests
@@ -131,14 +133,26 @@ class Blockchain:
 
 # app.run(debug=True, port=5000)
 b = Blockchain()
+if os.path.exists("blockchain.pickle"):
+    with open("blockchain.pickle", "rb") as f:
+        # unpickle the object and store it in a variable
+        b = pickle.load(f)
+else:
+    b.addTransaction(Transaction("sender1", "recipient1", 1))
+    b.mineBlock()
+    b.addTransaction(Transaction("sender2", "recipient2", 10))
+    b.mineBlock()
+
+
 # while(int(input("Enter 1 if you want to add a transaction\n")) == 1):
 #     b.addTransaction()
 #     b.mineBlock()
-b.addTransaction(Transaction("sender1", "recipient1", 1))
-b.mineBlock()
-b.addTransaction(Transaction("sender2", "recipient2", 10))
-b.mineBlock()
-# b.viewTransactions()
+
+# open a file to write the pickled blockchain object
+with open("blockchain.pickle", "wb") as f:
+    # pickle the blockchain object and write it to the file
+    pickle.dump(b, f)
+    # b.viewTransactions()
 
 print("These are transactions ")
 print(len(b.chain))
