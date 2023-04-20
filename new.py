@@ -26,7 +26,7 @@ class Block:
     def __str__(self): return "Block: {} {}".format(
         self.index, self.previousHash)
 
-    def __init__(self, index, timestamp, transactions, nonce, previousHash):
+    def __init__(self, index, timestamp, transactions, previousHash, nonce = 0):
         self.index = index
         self.timestamp = timestamp
         self.transactions = transactions
@@ -51,7 +51,7 @@ class Blockchain:
         self.chain = [self.createGenesisBlock()]
 
     def createGenesisBlock(self):
-        return Block(0, time.time(), [], 100, 1)
+        return Block(0, time.time(), [], 1)
 
     @property
     def getLastBlock(self):
@@ -79,7 +79,7 @@ class Blockchain:
         previous_hash = self.getLastBlock.Hash
         if previous_hash != block.previousHash:
             return False
-        if not self.is_valid_proof(block, proof):
+        if not self.isValidProof(block, proof):
             return False
         # block.Hash = proof
         self.chain.append(block)
@@ -89,18 +89,17 @@ class Blockchain:
         if not self.current_Transactions:
             return False
 
-        last_block = self.getLastBlock
+        lastBlock = self.getLastBlock
 
-        new_block = Block(index=last_block.index + 1,
+        newBlock = Block(index=lastBlock.index + 1,
                           timestamp=time.time(),
                           transactions=self.current_Transactions,
-                          nonce=0,
-                          previousHash=last_block.Hash)
+                          previousHash=lastBlock.Hash)
 
-        proof = self.proofOfWork(new_block)
-        self.addBlock(new_block, proof)
+        proof = self.proofOfWork(newBlock)
+        self.addBlock(newBlock, proof)
         self.current_Transactions = []
-        return new_block.index
+        return newBlock.index
 
     def proofOfWork(self, block):
         block.nonce = 0
@@ -110,7 +109,7 @@ class Blockchain:
             computed_hash = block.Hash
         return computed_hash
 
-    def is_valid_proof(self, block, block_hash):
+    def isValidProof(self, block, block_hash):
         return (block_hash.startswith('0' * self.difficulty) and
                 block_hash == block.Hash)
 
