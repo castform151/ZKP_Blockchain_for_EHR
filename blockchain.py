@@ -5,7 +5,7 @@ import hashlib
 from flask import Flask, request
 import requests
 import json
-
+import zkp_org as zkp
 
 class Transaction:
     def __str__(self): return "Transaction: {} -> {} : {}".format(self.sender,
