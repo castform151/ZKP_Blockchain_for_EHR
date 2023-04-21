@@ -6,7 +6,7 @@ class ZKP_Para:
     """Generates global/ pubic parameters for ZKP using discrete logarithm problem
     """
     def __init__(self) -> None:
-        pt = random.randrange(0, 2**10)
+        pt = random.randrange(0, 2**6)
         self.p = primes.find_prime(pt)
         self.g = primes.find_primitive_root(self.p)
 
@@ -43,7 +43,7 @@ class ZKP_Verifier:
         ver_challenge = int(hashlib.sha256(preHash.encode()).hexdigest(), 16)
         
         temp1 = pow(self.zkp_para.g, self.zkp_sig.sig, self.zkp_para.p)
-        temp2 = (self.h * pow(self.zkp_sig.y, ver_challenge, self.zkp_para.p)) % self.zkp_para.p
+        temp2 = (self.zkp_sig.h * pow(self.zkp_sig.y, ver_challenge, self.zkp_para.p)) % self.zkp_para.p
         
         return (temp1 == temp2) and (ver_challenge == self.zkp_sig.challenge)
     

@@ -6,43 +6,70 @@ from flask import Flask, request
 import requests
 import json
 import zkp_org as zkp
+from server  import SimpleObject
 
+zkp_para = zkp.ZKP_Para()
+userList = []
+
+class User:
+    def __str__(self): return json.dumps(self.__dict__, cls = SimpleObject, indent=4)
+
+    def __init__(self, username, password, report = None) -> None:
+        self.username = username
+        self.password = password
+        self.zkp_signature = zkp.ZKP_Signature(zkp_para, self.password)
+        self.reportList = [report]
+        
+        @classmethod
+        def takeInput(cls):
+            return cls(input("Enter username: "), input("Enter password: "))
+        
+        def addReport(self, report):
+            self.reportList.append(report)
+        
 class Transaction:
-    def __str__(self): return "Transaction: {} -> {} : {}".format(self.sender,
-                                                                  self.recipient, self.amount)
+    def __str__(self): return json.dumps(self.__dict__, cls = SimpleObject, indent=4)
 
-    def __init__(self, sender, recipient, amount):
+    def __init__(self, sender, recipient, report):
         self.sender = sender
         self.recipient = recipient
-        self.amount = amount
+        self.report = report
 
     @classmethod
     def takeInput(cls):
-        sender = input("Enter sender: ")
-        recipient = input("Enter recipient: ")
-        amount = input("Enter amount: ")
-        return cls(sender, recipient, amount)
-
-    def verifyTransaction():
-        pass
+        sender = input("Enter sender:")
+        if(sender not in userList):
+            print("Sender not found. Register First")
+            return None
+        recipient = input("Enter recipient:")
+        if(recipient not in userList):
+            print("Recipient not found. Invalid username")
+            return None
+        report = input("Enter report: ")
+        return cls(sender, recipient, report)
+    
+    def verifyTransaction(self):
+        if self.report not in self.sender.reportList:
+            print("Report not found in sender's report list")
+            return False
+        ver1 = zkp.ZKP_Verifier(zkp_para, self.sender.zkp_signature)
+        ver2 = zkp.ZKP_Verifier(zkp_para, self.recipient.zkp_signature)
+        
+        return ver1.verify() and ver2.verify()
 
 
 class Block:
-    def __str__(self): return "Block: {} {}".format(
-        self.index, self.previousHash)
+    def __str__(self): return json.dumps(self.__dict__)
 
-    def __init__(self, index, timestamp, transactions, previousHash, nonce=0):
+    def __init__(self, index, timestamp, transactions, previousHash, nonce = 0):
         self.index = index
         self.timestamp = timestamp
         self.transactions = transactions
         self.nonce = nonce
         self.previousHash = previousHash
-        # self.transactions = transactions
-        # self.merkel_root = None
 
     @property
     def Hash(self):
-        # hashData = self.previousHash + str(self.timestamp) + str(self.transactions) + str(self.nonce)
         hashData = '{}{}{}{}'.format(
             self.previousHash, self.index, self.nonce, self.timestamp
         )
@@ -56,31 +83,32 @@ class Blockchain:
         self.chain = [self.createGenesisBlock()]
 
     def createGenesisBlock(self):
-        return Block(0, time.time(), [], 1)
+        return Block(0, time.time(), [], 100)
 
     @property
     def getLastBlock(self):
         return self.chain[-1]
 
-    # def newTransaction(self, sender, recipient, amount):
-    #     self.current_Transactions.append(Transaction(sender, recipient, amount))
-    #     return len(self.current_Transactions)
-
-    # def newTransaction(self, transaction):
-    #     self.current_Transactions.append(transaction)
-    #     return len(self.current_Transactions)
-
-    def addTransaction(self, transaction):
-        # transaction = Transaction.takeInput()
-        self.current_Transactions.append(transaction)
-        return len(self.current_Transactions)
+    def addTransaction(self, transaction=None):
+        if not transaction:
+            transaction = Transaction.takeInput()
+        if(transaction.verifyTransaction()):
+            if transaction.report not in transaction.recipient.reportList:
+                transaction.recipient.reportList.append(transaction.report)
+            else:
+                print("Report already present in recipient's report list")
+            self.current_Transactions.append(transaction)
+            return len(self.current_Transactions)
+        else:
+            print("Transaction not verified")
+            return -1
 
     def viewTransactions(self):
         index = self.getLastBlock.index
         for i in range(0, index):
             print(self.current_Transactions[i])
 
-    def addBlock(self, block, proof):
+    def newBlock(self, block, proof):
         previous_hash = self.getLastBlock.Hash
         if previous_hash != block.previousHash:
             return False
@@ -97,12 +125,12 @@ class Blockchain:
         lastBlock = self.getLastBlock
 
         newBlock = Block(index=lastBlock.index + 1,
-                         timestamp=time.time(),
-                         transactions=self.current_Transactions,
-                         previousHash=lastBlock.Hash)
+                          timestamp=time.time(),
+                          transactions=self.current_Transactions,
+                          previousHash=lastBlock.Hash)
 
         proof = self.proofOfWork(newBlock)
-        self.addBlock(newBlock, proof)
+        self.newBlock(newBlock, proof)
         self.current_Transactions = []
         return newBlock.index
 
@@ -117,7 +145,23 @@ class Blockchain:
     def isValidProof(self, block, block_hash):
         return (block_hash.startswith('0' * self.difficulty) and
                 block_hash == block.Hash)
-
+    
+    
+    def isValidChain(self):
+        for i in range(1, len(self.chain)):
+            print(self.chain[i].previousHash, self.chain[i-1].Hash)
+            if self.chain[i].previousHash != self.chain[i-1].Hash:
+                return False
+        return True
+    
+    def viewUser(self, username):
+        for i in range(len(self.chain)):
+            for j in range(0, len(self.chain[i].transactions)):
+                if self.chain[i].transactions[j].sender.username == username or self.chain[i].transactions[j].recipient.username == username:
+                    return self.chain[i].transactions[j]
+u1 = User("P00san", "1234", "Healthy")
+u2 = User("D00Rathi", "0000")
+u3 = User("D00Amogh", "0000")
 
 b = Blockchain()
 if os.path.exists("blockchain.pickle"):
@@ -125,12 +169,12 @@ if os.path.exists("blockchain.pickle"):
         # unpickle the object and store it in a variable
         b = pickle.load(f)
 else:
-    b.addTransaction(Transaction("sender1", "recipient1", 1))
+    b.addTransaction(Transaction(u1, u2, "Healthy"))
     b.mineBlock()
-    b.addTransaction(Transaction("sender2", "recipient2", 10))
+    b.addTransaction(Transaction(u2, u3, "Healthy"))
     b.mineBlock()
 
-
+print(b.isValidChain())
 # while(int(input("Enter 1 if you want to add a transaction\n")) == 1):
 #     b.addTransaction()
 #     b.mineBlock()
@@ -141,26 +185,10 @@ with open("blockchain.pickle", "wb") as f:
     pickle.dump(b, f)
     # b.viewTransactions()
 
-print("These are transactions ")
-print(len(b.chain))
-for i in b.chain:
-    # print(i)
-    for t in i.transactions:
-        print(i, t)
+# print("These are transactions ")
+# print(len(b.chain))
+# for i in b.chain:
+#     # print(i)
+#     for t in i.transactions:
+#         print(i, t)
 
-
-app = Flask(__name__)
-
-blockchain = b
-
-
-@app.route('/chain', methods=['GET'])
-def get_chain():
-    chain_data = []
-    for block in blockchain.chain:
-        chain_data.append(block.__dict__)
-    return json.dumps({"length": len(chain_data),
-                       "chain": chain_data})
-
-
-app.run(debug=True, port=5000)
