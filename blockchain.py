@@ -22,7 +22,7 @@ class Transaction:
         recipient = input("Enter recipient: ")
         amount = input("Enter amount: ")
         return cls(sender, recipient, amount)
-    
+
     def verifyTransaction():
         pass
 
@@ -31,7 +31,7 @@ class Block:
     def __str__(self): return "Block: {} {}".format(
         self.index, self.previousHash)
 
-    def __init__(self, index, timestamp, transactions, previousHash, nonce = 0):
+    def __init__(self, index, timestamp, transactions, previousHash, nonce=0):
         self.index = index
         self.timestamp = timestamp
         self.transactions = transactions
@@ -97,9 +97,9 @@ class Blockchain:
         lastBlock = self.getLastBlock
 
         newBlock = Block(index=lastBlock.index + 1,
-                          timestamp=time.time(),
-                          transactions=self.current_Transactions,
-                          previousHash=lastBlock.Hash)
+                         timestamp=time.time(),
+                         transactions=self.current_Transactions,
+                         previousHash=lastBlock.Hash)
 
         proof = self.proofOfWork(newBlock)
         self.addBlock(newBlock, proof)
@@ -119,21 +119,6 @@ class Blockchain:
                 block_hash == block.Hash)
 
 
-# app = Flask(__name__)
-
-# blockchain = Blockchain()
-
-
-# @app.route('/chain', methods=['GET'])
-# def get_chain():
-#     chain_data = []
-#     for block in blockchain.chain:
-#         chain_data.append(block.__dict__)
-#     return json.dumps({"length": len(chain_data),
-#                        "chain": chain_data})
-
-
-# app.run(debug=True, port=5000)
 b = Blockchain()
 if os.path.exists("blockchain.pickle"):
     with open("blockchain.pickle", "rb") as f:
@@ -162,3 +147,20 @@ for i in b.chain:
     # print(i)
     for t in i.transactions:
         print(i, t)
+
+
+app = Flask(__name__)
+
+blockchain = b
+
+
+@app.route('/chain', methods=['GET'])
+def get_chain():
+    chain_data = []
+    for block in blockchain.chain:
+        chain_data.append(block.__dict__)
+    return json.dumps({"length": len(chain_data),
+                       "chain": chain_data})
+
+
+app.run(debug=True, port=5000)
