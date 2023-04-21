@@ -6,7 +6,12 @@ from flask import Flask, request
 import requests
 import json
 import zkp_org as zkp
-from server  import SimpleObject
+
+class SimpleObject(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, "__dict__"):
+            return {key:value for key, value in obj.__dict__.items() if not key.startswith("_")}
+        return super().default(obj)  
 
 zkp_para = zkp.ZKP_Para()
 userList = []
@@ -20,12 +25,12 @@ class User:
         self.zkp_signature = zkp.ZKP_Signature(zkp_para, self.password)
         self.reportList = [report]
         
-        @classmethod
-        def takeInput(cls):
-            return cls(input("Enter username: "), input("Enter password: "))
+    @classmethod
+    def takeInput(cls):
+        return cls(input("Enter username: "), input("Enter password: "))
         
-        def addReport(self, report):
-            self.reportList.append(report)
+    def addReport(self, report):
+        self.reportList.append(report)
         
 class Transaction:
     def __str__(self): return json.dumps(self.__dict__, cls = SimpleObject, indent=4)
@@ -88,7 +93,7 @@ class Blockchain:
     @property
     def getLastBlock(self):
         return self.chain[-1]
-
+    
     def addTransaction(self, transaction=None):
         if not transaction:
             transaction = Transaction.takeInput()
@@ -155,34 +160,42 @@ class Blockchain:
         return True
     
     def viewUser(self, username):
+        if username not in userList:
+            print("User not found")
+        tr_list = []
         for i in range(len(self.chain)):
             for j in range(0, len(self.chain[i].transactions)):
                 if self.chain[i].transactions[j].sender.username == username or self.chain[i].transactions[j].recipient.username == username:
-                    return self.chain[i].transactions[j]
-u1 = User("P00san", "1234", "Healthy")
-u2 = User("D00Rathi", "0000")
-u3 = User("D00Amogh", "0000")
+                    tr_list.append(self.chain[i].transactions[j])
+        return tr_list
 
-b = Blockchain()
-if os.path.exists("blockchain.pickle"):
-    with open("blockchain.pickle", "rb") as f:
-        # unpickle the object and store it in a variable
-        b = pickle.load(f)
-else:
-    b.addTransaction(Transaction(u1, u2, "Healthy"))
-    b.mineBlock()
-    b.addTransaction(Transaction(u2, u3, "Healthy"))
-    b.mineBlock()
 
-print(b.isValidChain())
-# while(int(input("Enter 1 if you want to add a transaction\n")) == 1):
-#     b.addTransaction()
+# u1 = User("P00san", "1234")
+# u2 = User("D00Rathi", "0000")
+# u3 = User("D00Amogh", "0000")
+# userList += [u1,u2,u3]
+# u1.addReport("I am not feeling well")
+# b = Blockchain()
+# if os.path.exists("blockchain.pickle"):
+#     with open("blockchain.pickle", "rb") as f:
+#         # unpickle the object and store it in a variable
+#         print("Hello")
+#         b = pickle.load(f)
+# else:
+#     b.addTransaction(Transaction(u1, u2, "I am not feeling well"))
+#     b.mineBlock()
+#     b.addTransaction(Transaction(u2, u3, "I am not feeling well"))
 #     b.mineBlock()
 
-# open a file to write the pickled blockchain object
-with open("blockchain.pickle", "wb") as f:
-    # pickle the blockchain object and write it to the file
-    pickle.dump(b, f)
+# # print(b.isValidChain())
+# # while(int(input("Enter 1 if you want to add a transaction\n")) == 1):
+# #     b.addTransaction()
+# #     b.mineBlock()
+
+# # open a file to write the pickled blockchain object
+# with open("blockchain.pickle", "wb") as f:
+#     # pickle the blockchain object and write it to the file
+#     pickle.dump(b, f)
     # b.viewTransactions()
 
 # print("These are transactions ")

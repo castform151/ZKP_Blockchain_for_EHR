@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+      <dl>
+        {{ render_field(form.username) }}
+      </dl>
+      <p><input type=submit class="btn btn-primary btn-lg active" value=View>
+    </form>
+    
+    <br>
+    <br>
+    {% if data %}
+    <table class="table table-bordered">
+        <tr>
+            <th>Sender</th>
+            <th>Receiver</th>
+            <th>Report</th>
+            
+          </tr>
+      
+        {% for transaction in data %}
+          {% if transaction %}
+            <!-- {% for r in transaction %} -->
+            <tr>
+                {% if transaction.sender %}
+              <td>{{transaction.sender}}</td>
+              {% endif %}
+              {% if transaction.recipient %}
+              <td>{{transaction.recipient}}</td>
+              {% endif %}
+              {% if transaction.report %}
+              <td>{{transaction.report}}</td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+          
+      
+    </table>
+    {% endif %}
+{% endblock content %}
