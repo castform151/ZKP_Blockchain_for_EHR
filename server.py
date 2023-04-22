@@ -56,11 +56,6 @@ def base():
 def home():
     global login_check
     global login_username
-    
-    print("Am i logged in? ", login_check)
-    if(login_check == False):
-        return redirect('/index')
-        
     return render_template('home.html',user=login_username + " (logout)")
 
 @app.route('/signup', methods=['GET','POST'])
@@ -68,9 +63,7 @@ def signup():
     global login_check
     global login_username
     global password
-    
-    # if login:
-    #     return redirect('/signup')
+   
     form=SignupUser(request.form)
     if(request.method =='POST' and form.validate()):
         username =form.username.data
@@ -98,8 +91,6 @@ def login():
     form =SignIn(request.form)
     flag = 0
     if(request.method =='POST' and form.validate()):
-        # with open('userlist.pickle', 'wb') as f:
-        #     pickle.dump(userList, f)
 
         u1 = User(form.username.data,form.password.data)
         for user in userList:
@@ -122,15 +113,6 @@ def logout():
     global login_check
     global login_username
     
-    # for i, user in enumerate(userList):
-    #     if user.username == login_username:
-    #         # del userList[i]
-    #         break
-
-    # Save  userList to pickle file
-  
-    # with open('userList.pickle', 'wb') as f:
-    #     pickle.dump(userList, f)
     login_check = False
     login_username = ''
     return redirect('/login')
@@ -146,18 +128,7 @@ def viewreport():
     if(not login_check):
         return redirect('/login')
 
-    # form = ViewReportForm(request.form)
-    # # global login_username
 
-    # if (request.method == 'POST' and form.validate()):
-    #     for user in userList:
-    #         if (user.username == login_username):
-    #             data=user.reportList
-    #             if data is None:
-    #                 flash("No reports for this user ")
-
-    #             return render_template('viewreport.html', data=data, form=form, user=login_username + " (logout)")
-    
     error = None
     data = None
     for user in userList:
@@ -179,13 +150,6 @@ def viewtransaction():
     if(not login_check):
         return redirect('/login')
 
-
-    # form = ViewTransactionForm(request.form)
-    # global login_username
-
-    # if (request.method == 'POST' and form.validate()):
-    #     transactions = b.viewUser(login_username)
-    #     return render_template('viewtransaction.html', data=transactions, form=form, user=login_username + " (logout)")
     transactions = b.viewUser(login_username)
     
     return render_template('viewtransaction.html', data = transactions, user=login_username + " (logout)")
@@ -202,8 +166,7 @@ def addreport():
         return redirect('/login')
 
     form = AddReportForm(request.form)
-
-
+   
     if (request.method == 'POST' and form.validate()):
         # user = form.username.data
         report = form.report.data
@@ -223,6 +186,15 @@ def sendreport():
     global login_username
     global password
     
+    error = None
+    data = None
+    for user in userList:
+        if (user.username == login_username):
+            data=user.reportList
+            print("Reports for user", data)
+            if data is None:
+                error = "No reports for this user"
+
     if(not login_check):
         return redirect('/login')
 
@@ -250,7 +222,7 @@ def sendreport():
             if (user.username == recipient_un):
                 recipient = user
                 flag = 1
-                if(report not in recipient.reportList):
+                if(report not in sender.reportList):
                     flash("Report does not exist")
                     return redirect('/sendreport')
                 b.addTransaction(Transaction(sender, recipient,report))
@@ -262,7 +234,7 @@ def sendreport():
             return redirect('/sendreport')
 
 
-    return render_template('sendreport.html', form=form, options = options ,user=login_username + " (logout)")
+    return render_template('sendreport.html', form=form, options = options, data = data, error =error ,user=login_username + " (logout)")
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
