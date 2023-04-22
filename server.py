@@ -12,11 +12,6 @@ from flask import Flask, jsonify, request, flash, redirect, url_for, render_temp
 from config import Config
 from blockchain import Blockchain,User,Transaction,userList
 
-
-login=False
-login_username=""
-password=""
-
 class SimpleObject(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, "__dict__"):
@@ -32,6 +27,11 @@ else:
         
 app = Flask(__name__)
 app.config.from_object(Config)
+
+
+login=False
+login_username=""
+password=""
 
 
 @app.route('/', methods=['GET'])
@@ -96,13 +96,23 @@ def login():
                 return redirect('/login')
 
 
-    return render_template('signup.html',form=form)
+    return render_template('login.html',form=form)
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    global loggedin
+    global loggedin_user
+
+    loggedin = False
+    loggedin_user = ''
+    return redirect('/login')
 
 @app.route('/viewreport', methods=['POST', 'GET'])
 def viewreport():
     global login
     global login_username
     global password
+    
     if(not login):
         return redirect('/login')
 
@@ -145,7 +155,7 @@ def viewtransaction():
 @app.route('/addreport', methods=['POST', 'GET'])
 def addreport():
 
-    global login    
+    global login   
     global login_username
     global password
 
@@ -201,5 +211,8 @@ def sendreport():
 
     return render_template('sendreport.html', form=form, user=login_username + " (logout)")
 
+@app.route('/index', methods=['POST', 'GET'])
+def index():
+     return render_template('index.html', user=login_username + " (logout)")
 
 app.run(debug=True, port=5000)
