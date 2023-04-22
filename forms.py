@@ -18,7 +18,6 @@ class SignIn(Form):
     submit =SubmitField('Login')
 
 class AddReportForm(Form):
-    # username = StringField('Username', [validators.Length(min=4, max=25)])
     report = TextAreaField('Report', [validators.length(min=8, max=200)])
 
 

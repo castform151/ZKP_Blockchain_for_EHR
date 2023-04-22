@@ -43,7 +43,7 @@ def home():
     if(not login):
         return redirect('/home')
 
-    return render_template('index.html', user=login_username + " (logout)")
+    return render_template('home.html', user=login_username + " (logout)")
 
 
 # @app.route('/home', methods=['GET'])
