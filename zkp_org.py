@@ -6,9 +6,11 @@ class ZKP_Para:
     """Generates global/ pubic parameters for ZKP using discrete logarithm problem
     """
     def __init__(self) -> None:
-        pt = random.randrange(0, 2**6)
-        self.p = primes.find_prime(pt)
-        self.g = primes.find_primitive_root(self.p)
+        # pt = random.randrange(0, 2**6)
+        # self.p = primes.find_prime(pt)
+        # self.g = primes.find_primitive_root(self.p)
+        self.p = 997
+        self.g = 5
 
 class ZKP_Signature:
     """Generates and stores signature for ZKP using discrete logarithm problem

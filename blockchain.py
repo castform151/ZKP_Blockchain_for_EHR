@@ -14,16 +14,16 @@ class SimpleObject(json.JSONEncoder):
         return super().default(obj)  
 
 zkp_para = zkp.ZKP_Para()
-userList = []
+# userList = []
 
 class User:
     def __str__(self): return json.dumps(self.__dict__, cls = SimpleObject, indent=4)
 
-    def __init__(self, username, password, report = None) -> None:
+    def __init__(self, username, password) -> None:
         self.username = username
         self.password = password
         self.zkp_signature = zkp.ZKP_Signature(zkp_para, self.password)
-        self.reportList = [report]
+        self.reportList = []
         
     @classmethod
     def takeInput(cls):
@@ -95,6 +95,7 @@ class Blockchain:
         return self.chain[-1]
     
     def addTransaction(self, transaction=None):
+        print("Adding this transaction" , transaction)
         if not transaction:
             transaction = Transaction.takeInput()
         if(transaction.verifyTransaction()):
@@ -103,6 +104,8 @@ class Blockchain:
             else:
                 print("Report already present in recipient's report list")
             self.current_Transactions.append(transaction)
+            if(len(self.current_Transactions) > 0):
+                self.mineBlock()
             return len(self.current_Transactions)
         else:
             print("Transaction not verified")
@@ -160,8 +163,11 @@ class Blockchain:
         return True
     
     def viewUser(self, username):
-        if username not in userList:
-            print("User not found")
+        print(userList)
+        unl = [i.username for i in userList]
+        if(username not in unl):
+            print("Blockchain: User not found")
+            return None
         tr_list = []
         for i in range(len(self.chain)):
             for j in range(0, len(self.chain[i].transactions)):
@@ -173,7 +179,11 @@ class Blockchain:
 # u1 = User("P00san", "1234")
 # u2 = User("D00Rathi", "0000")
 # u3 = User("D00Amogh", "0000")
-# userList += [u1,u2,u3]
+# userList = [u1,u2,u3]
+# with open("userList.pickle", "wb") as f:
+#     # pickle the blockchain object and write it to the file
+#     pickle.dump(userList, f)
+
 # u1.addReport("I am not feeling well")
 # b = Blockchain()
 # if os.path.exists("blockchain.pickle"):
@@ -205,3 +215,13 @@ class Blockchain:
 #     for t in i.transactions:
 #         print(i, t)
 
+u1 = User("P00san", "1234")
+u2 = User("D00Rathi", "0000")
+u3 = User("D00Amogh", "0000")
+u1.addReport("I am not feeling well")
+userList = [u1,u2,u3]
+b = Blockchain()
+b.addTransaction(Transaction(u1, u2, "I am not feeling well"))
+b.mineBlock()
+b.addTransaction(Transaction(u2, u3, "I am not feeling well"))
+b.mineBlock()

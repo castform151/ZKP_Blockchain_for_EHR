@@ -31,7 +31,7 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="nav navbar-nav navbar-right">
               <a class="nav-item nav-link" href="/">Home</a>
-
+              <a class="nav-item nav-link" href="/index">Index</a>
             </div>
           </div>
         </div>
@@ -50,6 +50,11 @@
       </nav>
     </header>
 	<main role="main" class="container">
+      <div align ="center">
+        {%  if  error %}
+ 	      <p> Error : {{error}}</p>
+ 	      {% endif %} 
+      </div>
       <div align ="center">
         {% with messages = get_flashed_messages() %}
         {% if messages %}

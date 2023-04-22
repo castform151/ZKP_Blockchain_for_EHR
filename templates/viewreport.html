@@ -1,29 +1,19 @@
 {% extends "layout.html" %}
 {%block content %}
-    {% from "_formhelpers.html" import render_field %}
-    <form method="post">
-      <dl>
-        {{ render_field(form.username) }}
-      </dl>
-      <p><input type=submit class="btn btn-primary btn-lg active" value=View>
-    </form>
-    
     <br>
     <br>
     {% if data %}
     <table class="table table-bordered">
-        <caption>Reports for {{user}}</caption>
+        <caption style="text-align: center">Reports for {{user}}</caption>
         <tr>
-            <th>Report</th>
+            <th style="text-align: center">Report</th>
           </tr>
       
         {% for report in data %}
           {% if  report %}
-            <!-- {% for r in transaction %} -->
             <tr>
-              <td>{{report}}</td>
+              <td style="text-align: center">{{report}}</td>
             </tr>
-            {% endfor %}
           {% endif %}
         {% endfor %}
           
