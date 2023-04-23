@@ -125,4 +125,4 @@ class ZK_Verifier:
        
 # z = ZKP("102830")
 
-print(generateLargePrime(2**10))
+# print(generateLargePrime(2**10))

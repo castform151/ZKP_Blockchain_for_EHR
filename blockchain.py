@@ -288,7 +288,6 @@ u2.addReport("I have high blood pressure")
 userList = [u1,u2,u3,u4]
 b = Blockchain()
 b.addTransaction(Transaction(u1, u3, "I am not feeling well"))
-b.addTransaction(Transaction(u1, u4, "I am not feeling well"))
 b.mineBlock()
 b.addTransaction(Transaction(u2, u4, "I have high blood pressure"))
 b.mineBlock()
